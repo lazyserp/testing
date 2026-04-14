@@ -1,0 +1,12 @@
+# 1st Terminal (Backend)
+cd backend
+uvicorn main:app --port 8000
+
+# 2nd Terminal (Frontend)
+cd frontend
+python -m http.server 8080
+
+You can now access the interface via http://localhost:8080/index.html.
+
+(Sample Credentials) Employee: emp.a1.01@wissen.com / password123 
+Admin: admin@wissen.com / admin123

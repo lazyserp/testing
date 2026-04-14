@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Wissen Seat Booking</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-layer"></div>
+    
+    <header class="app-header">
+        <div class="logo">
+            <h2 class="text-brand">Wissen<span style="color:var(--text-primary); font-weight:300;">Seat</span></h2>
+        </div>
+        <div class="user-profile">
+            <div class="user-info" style="text-align: right;">
+                <div id="userName" style="font-weight: 500;">User Name</div>
+                <div id="userRole" style="font-size: 12px; color: var(--text-secondary);">Role</div>
+            </div>
+            <div class="avatar" id="userAvatar">U</div>
+            <button class="btn-outline btn-sm" onclick="API.logout()" style="padding: 6px 12px; margin-left: 10px;">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-head">
+            <h1>My Schedule</h1>
+            <p id="cycleInfo" style="margin-top: 5px;">Loading cycle context...</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar -->
+            <aside>
+                <div class="glass-panel info-card">
+                    <h3 style="margin-bottom: 15px;">Profile Details</h3>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-val" id="profileEmail">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Squad</span>
+                        <span class="info-val" id="profileSquad">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Group</span>
+                        <span class="info-val" id="profileGroup">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fixed Seat</span>
+                        <span class="info-val" id="profileSeat" class="text-brand">-</span>
+                    </div>
+                </div>
+
+                <div class="glass-panel info-card mt-4">
+                    <h3 style="margin-bottom: 10px;">Quick Actions</h3>
+                    <p style="font-size: 13px; margin-bottom: 15px;">Remember, actions for today must be completed before <strong class="text-warning">3:00 PM</strong>.</p>
+                    <button class="btn-outline" style="width: 100%; margin-bottom: 10px;" id="btnBookSeat" onclick="window.location.href='book.html'">
+                        Book Floater Seat
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content: Week View -->
+            <main>
+                <div class="glass-panel" style="padding: 25px;">
+                    <div class="flex-between mb-4">
+                        <h2>Weekly Allocation</h2>
+                        <div class="week-nav" style="display:flex; gap:10px;">
+                            <button class="btn-outline" id="prevWeek">&larr; Prev</button>
+                            <button class="btn-outline" id="nextWeek">Next &rarr;</button>
+                        </div>
+                    </div>
+                    
+                    <div class="week-container" id="weekContainer">
+                        <!-- Days injected via JS -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

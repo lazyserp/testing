@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Wissen Seat Booking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .side-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            justify-content: flex-start;
+            border-radius: var(--radius-sm);
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); }
+        .nav-btn.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--brand);
+            border-left: 3px solid var(--brand);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .panel-section { display: none; }
+        .panel-section.active { display: block; animation: fadeIn 0.3s ease-out; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table th {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    
+    <header class="app-header">
+        <div class="logo">
+            <h2 class="text-brand">Wissen<span style="color:var(--text-primary); font-weight:300;">Admin</span></h2>
+        </div>
+        <div class="user-profile">
+            <button class="btn-outline btn-sm" onclick="API.logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Administration Panel</h1>
+        
+        <div class="admin-layout">
+            <!-- Sidebar Nav -->
+            <div class="glass-panel" style="padding: 20px; align-self: start;">
+                <h4 style="margin-bottom: 15px; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Management</h4>
+                <div class="side-nav">
+                    <button class="nav-btn active" data-target="tabAllocations">Daily Allocations</button>
+                    <button class="nav-btn" data-target="tabHolidays">Public Holidays</button>
+                    <button class="nav-btn" data-target="tabEmployees">Employees & Seats</button>
+                    <button class="nav-btn" data-target="tabAudit">Audit Logs</button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="glass-panel" style="padding: 25px; min-height: 500px;">
+                
+                <!-- Daily Allocations View -->
+                <div id="tabAllocations" class="panel-section active">
+                    <h2>Daily Allocations</h2>
+                    <div style="display:flex; gap:10px; margin: 20px 0;">
+                        <input type="date" id="allocDate" style="max-width: 200px;">
+                        <button class="btn-outline" id="btnLoadAlloc">View Day</button>
+                    </div>
+                    <div id="allocContent" style="display: none;">
+                        <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
+                            <div class="info-card" style="margin-bottom: 0;">
+                                <h3>Day Overview</h3>
+                                <div class="info-item"><span class="info-label">Batch In Office</span><span class="info-val text-brand" id="allocBatch">-</span></div>
+                                <div class="info-item"><span class="info-label">Holiday</span><span class="info-val text-warning" id="allocHoliday">-</span></div>
+                                <div class="info-item"><span class="info-label">Total Expected</span><span class="info-val" id="allocTotal">-</span></div>
+                            </div>
+                            <div class="info-card" style="margin-bottom: 0;">
+                                <h3>Floater Details</h3>
+                                <div class="info-item"><span class="info-label">Current Floater Bookings</span><span class="info-val" id="allocBooked">-</span></div>
+                                <div class="info-item"><span class="info-label">Fixed Seats Released</span><span class="info-val text-success" id="allocReleased">-</span></div>
+                                <div class="info-item"><span class="info-label">Seats Remaining Free</span><span class="info-val" id="allocFree">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Holidays -->
+                <div id="tabHolidays" class="panel-section">
+                    <h2>Manage Holidays</h2>
+                    <form id="frmHoliday" style="display: flex; gap: 10px; margin: 20px 0; align-items: flex-end;">
+                        <div class="input-group" style="flex:1;"><label>Date</label><input type="date" id="holDate" required></div>
+                        <div class="input-group" style="flex:2;"><label>Name/Reason</label><input type="text" id="holName" required placeholder="New Year's Eve"></div>
+                        <button type="submit">Add Holiday</button>
+                    </form>
+                    <table class="data-table">
+                        <thead><tr><th>Date</th><th>Name</th><th>Action</th></tr></thead>
+                        <tbody id="tblHolidays"></tbody>
+                    </table>
+                </div>
+
+                <!-- Employees -->
+                <div id="tabEmployees" class="panel-section">
+                    <h2>Employees & Seats</h2>
+                    <p style="margin: 10px 0; font-size: 13px; color: var(--text-secondary);">Fixed seats are assigned via admin API. Listing current assignments.</p>
+                    <table class="data-table">
+                        <thead><tr><th>Name</th><th>Group</th><th>Squad</th><th>Fixed Seat</th></tr></thead>
+                        <tbody id="tblEmployees"></tbody>
+                    </table>
+                </div>
+
+                <!-- Audit Logs -->
+                <div id="tabAudit" class="panel-section">
+                    <h2>System Audit Logs</h2>
+                    <div style="max-height: 400px; overflow-y: auto; margin-top: 20px;">
+                        <table class="data-table">
+                            <thead><tr><th>Timestamp</th><th>Emp ID</th><th>Action</th><th>Details</th></tr></thead>
+                            <tbody id="tblAudit"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Seat - Wissen</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .seat-map-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .seat-node {
+            aspect-ratio: 1;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .seat-node.available {
+            cursor: pointer;
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .seat-node.available:hover {
+            transform: scale(1.05);
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .seat-node.selected {
+            background: var(--brand);
+            color: white;
+            border-color: var(--brand-hover);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--brand-glow);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    
+    <header class="app-header">
+        <div class="logo">
+            <h2 class="text-brand" style="cursor: pointer;" onclick="window.location.href='dashboard.html'">
+                Wissen<span style="color:var(--text-primary); font-weight:300;">Seat</span>
+            </h2>
+        </div>
+        <div class="user-profile">
+            <button class="btn-outline btn-sm" onclick="window.location.href='dashboard.html'" style="padding: 6px 12px;">Back to Dashboard</button>
+        </div>
+    </header>
+
+    <div class="container" style="max-width: 800px;">
+        <div class="glass-panel" style="padding: 30px;">
+            <div class="flex-between" style="margin-bottom: 20px;">
+                <div>
+                    <h2>Seat Booking</h2>
+                    <p>Select your office day to view available floater seats.</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-end;">
+                <div class="input-group" style="flex: 1;">
+                    <label for="bookDate">Date</label>
+                    <input type="date" id="bookDate">
+                </div>
+                <button class="btn-outline" id="btnCheckAvailable">Check Availability</button>
+            </div>
+
+            <div id="loadingIndicator" style="display: none; text-align: center; padding: 20px;">
+                Loading available seats...
+            </div>
+
+            <div id="seatMap" class="seat-map-container" style="display: none;">
+                <!-- Generated dynamically -->
+            </div>
+
+            <div id="bookingAction" style="display: none; margin-top: 30px; text-align: right;">
+                <span style="margin-right: 15px;">Selected: <strong id="selectedSeatLabel" class="text-brand">None</strong></span>
+                <button id="btnConfirmBook">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/api.js"></script>
+    <script src="js/book.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Wissen Seat Booking</title>
+    <!-- Add SEO Meta Tags -->
+    <meta name="description" content="Secure portal to the Wissen Seat Booking System for managing your hybrid-work schedule.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-layer"></div>
+    
+    <div class="login-container">
+        <div class="glass-panel login-card">
+            <div class="login-header">
+                <h1 class="text-brand">Wissen</h1>
+                <p>Seat Booking System</p>
+            </div>
+            
+            <form id="loginForm" class="mt-4">
+                <div class="input-group mb-4">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="emp.a1.01@wissen.com" required placeholder="name@wissen.com">
+                </div>
+                
+                <div class="input-group mb-4">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" value="password123" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" id="loginBtn" style="width: 100%; margin-top: 10px;">
+                    Sign In
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14m-7-7l7 7-7 7"/>
+                    </svg>
+                </button>
+            </form>
+            
+            <div style="text-align: center; font-size: 13px; color: var(--text-secondary); margin-top: 10px;">
+                <p>Protected by internal auth.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (API.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            btn.disabled = true;
+            btn.innerHTML = 'Signing in...';
+            
+            try {
+                const res = await API.login(email, password);
+                API.showToast('Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = res.employee.role === 'ADMIN' ? 'admin.html' : 'dashboard.html';
+                }, 800);
+            } catch (err) {
+                API.showToast(err.message || 'Invalid credentials', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>';
+            }
+        });
+    </script>
+</body>
+</html>
