@@ -1,0 +1,151 @@
+1. Problem Objective (Clear Definition)
+
+Design a Seat Booking System for an organization that:
+
+Maximizes seat utilization
+Enforces structured hybrid work scheduling
+Allows controlled flexibility via shared (floater) seats
+2. Core Entities
+
+Define these explicitly so an AI agent can model them:
+
+Employees
+Total employees: 80 (10 squads × 8 members)
+Each employee belongs to:
+1 Squad
+1 Group
+Organization Structure
+2 Groups
+Each group has 5 squads
+10 Squads total
+Each squad has 8 members
+Seats
+Total seats: 50
+40 Fixed Seats
+10 Floater Seats
+3. Key Definitions
+Fixed Seat
+Assigned to employees only on their designated office days
+Floater Seat
+Can be booked by any employee
+Used when:
+Employee is not assigned a fixed seat that day
+A fixed seat is released (leave/holiday)
+4. Scheduling Rules (Critical Clarification)
+Work Cycle
+System runs on a 2-week cycle
+Each Squad Rule
+Each squad must work 5 days in office per 2 weeks
+Batch Assignment
+Batch 1 Squads
+
+Work on:
+
+Week 1 → Monday, Tuesday, Wednesday
+Week 2 → Thursday, Friday
+Batch 2 Squads
+
+Work on:
+
+Week 1 → Thursday, Friday
+Week 2 → Monday, Tuesday, Wednesday
+Group Mapping (Clarify for implementation)
+Group A → Batch 1
+Group B → Batch 2
+5. Booking Rules
+Rule 1: Seat Allocation Visibility
+Users can view:
+Weekly seat plan
+Daily seat allocation
+Available floater seats
+Rule 2: Booking Eligibility
+Employees can:
+Book seats only on their designated office days
+NOT book on non-designated days
+Rule 3: Non-Designated Days
+Seats must be:
+Blocked by default
+No booking allowed
+Rule 4: Booking Time Restriction
+Seat booking or release:
+Allowed only before 3:00 PM (previous day or same day—clarify in implementation)
+After 3 PM → system locks changes
+Rule 5: Holidays
+On holidays:
+No booking allowed
+All seats remain unavailable
+Rule 6: Leave Handling
+
+If an employee is on leave:
+
+Their fixed seat becomes a floater seat
+Available for others to book
+Rule 7: Seat Release
+Employees can release their seat:
+Before 3 PM
+Released seats become:
+Floater seats for that day
+6. System Behavior (Important for AI agent)
+Daily Allocation Logic
+
+For each day:
+
+Identify active squads (based on batch schedule)
+Calculate total employees coming
+Assign:
+Fixed seats first
+Remaining employees use floater seats
+Handle:
+Leaves → convert fixed → floater
+Releases → convert fixed → floater
+7. Edge Cases (Must be explicitly handled)
+More employees than seats → booking priority required
+Multiple users booking same floater seat → conflict resolution
+Late release after 3 PM → reject
+Holiday overrides everything
+Partial attendance (leave mid-week)
+8. Functional Requirements
+User Features
+View weekly schedule
+View available seats
+Book seat
+Release seat
+Mark leave
+Admin Features
+Define:
+Holidays
+Squad → Batch mapping
+Override allocations (optional)
+9. Non-Functional Requirements
+Concurrency-safe booking (no double booking)
+Real-time availability updates
+Audit logs (who booked/released)
+10. Suggested Data Model (High-level)
+Employee(id, squad_id, group_id)
+Squad(id, group_id, batch)
+Seat(id, type: FIXED/FLOATER)
+Booking(id, employee_id, seat_id, date, status)
+Leave(employee_id, date)
+Holiday(date)
+11. What Was Ambiguous (Now Resolved)
+
+Original Issue → Fix:
+
+“flotter can be booked by nom designated days”
+→ Floater seats usable by anyone only within allowed booking rules
+“Each squad has to vsi for 5 days”
+→ Defined exact schedule per batch
+“release seats on a holiday”
+→ Clarified: no booking at all on holidays
+“blocked for nondesignated days”
+→ Explicit system rule
+Final Result
+
+This is now:
+
+Deterministic
+Machine-readable
+Ready for:
+Backend design
+AI agent implementation
+API contract generation
